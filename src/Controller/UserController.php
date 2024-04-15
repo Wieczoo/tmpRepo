@@ -15,49 +15,21 @@ use Nelmio\ApiDocBundle\Annotation\Security;
 //use OpenApi\Attributes as OA;
 use OpenApi\Annotations as OA;
 
+/**
+ *
+ */
 class UserController extends AbstractController
 {
-    #[Route('/api/register', name: 'app_register', methods: ['POST'])]
     /**
-     * @OA\Post(
-     *   path="/v1/user/update",
-     *   summary="Form post",
-     *   @OA\RequestBody(
-     *     @OA\MediaType(
-     *       mediaType="multipart/form-data",
-     *       @OA\Schema(
-     *         @OA\Property(property="name"),
-     *         @OA\Property(
-     *           description="file to upload",
-     *           property="avatar",
-     *           type="string",
-     *           format="binary",
-     *         ),
-     *       )
-     *     )
-     *   ),
-     *   @OA\Response(response=200, description="Success")
-     * )
+     * @param Request $request
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @param EntityManagerInterface $entityManager
+     * @return Response
      */
-    #[OA\Parameter(
-        name: 'email',
-        description: 'The field used to order rewards',
-        in: 'body',
-        schema: new OA\Schema(type: 'string'),
-    )]
-    #[OA\Parameter(
-        name: 'password',
-        description: 'The field used to order rewards',
-        in: 'query',
-        schema: new OA\Schema(type: 'string')
-    )]
-
-
-
-    public function addUser(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    #[Route('/api/register', name: 'app_register', methods: ['POST'])]
+     public function addUser(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $params = $request->request->all();
-
+        $params = json_decode($request->getContent(),true);
         if (!isset($params['email']) || !isset($params['password'])) {
             return new Response(
                 json_encode(array('message' => 'Invalid data')),
